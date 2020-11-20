@@ -13,6 +13,10 @@ type Entry struct {
 	Message string
 }
 
+func (e Entry)  Enc() *Encoder {
+	return e.enc
+}
+
 // String adds a string to the log entry.
 func (e Entry) String(k, v string) Entry {
 	e.enc.StringKey(k, v)
