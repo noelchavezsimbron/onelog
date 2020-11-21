@@ -24,7 +24,7 @@ func main() {
 		},
 	)
 
-	perro :=Perro{
+	perro := &Perro{
 		Name: "Roy",
 		Raza: "Bull Dog",
 	}
@@ -50,10 +50,12 @@ func main() {
 		Action:        "Received response from \"httpL//fakeapi.com",
 		Url:           "httpL//fakeapi.com",
 		Method:        "POST",
-		Headers:       nil,
-		Status:        "200",
-		SatusCode:     200,
-		Body:          *responseBody,
+		Headers: map[string]string{
+			"Content-Type": "appplication/json",
+		},
+		Status:    "200",
+		SatusCode: 200,
+		Body:      *responseBody,
 	}
 
 	logger.InfoWith().

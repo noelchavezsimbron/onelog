@@ -36,7 +36,8 @@ func (marshaller objectJsonMarshaller) MarshalJSONObject(enc IEncoder) {
 		for i := 0; i < sType.NumField(); i++ {
 			field := sType.Field(i)
 			value := sValue.Field(i)
-			marshaller.fieldKey(enc, field, value)
+			key := marshaller.getFieldName(field)
+			marshaller.valueKey(key, enc, value)
 		}
 
 	}
@@ -51,19 +52,9 @@ func (marshaller objectJsonMarshaller) MarshalJSONObject(enc IEncoder) {
 	}
 
 	if sType.Kind() == reflect.Interface {
-		data, ok := obj.(map[string]interface{})
-		if ok {
-			enc.Object(newObjectJsonMarshaller(data))
-		}
+		newObjectJsonMarshaller(sValue.Interface()).MarshalJSONObject(enc)
 	}
 
-}
-
-func (marshaller objectJsonMarshaller) fieldKey(enc IEncoder, field reflect.StructField, value reflect.Value) {
-
-	keyName := marshaller.getFieldName(field)
-
-	marshaller.valueKey(keyName, enc, value)
 }
 
 func (marshaller objectJsonMarshaller) valueKey(keyName string, enc IEncoder, value reflect.Value) {
