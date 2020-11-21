@@ -5,7 +5,7 @@ import "reflect"
 func (enc *Encoder) InterfaceKey(key string, v interface{}) {
 
 	value := reflect.ValueOf(v)
-	if value.Interface() == nil {
+	if v==nil || value.Interface() == nil {
 		return
 	}
 
@@ -21,7 +21,7 @@ func (enc *Encoder) AddInterface(v interface{}) {
 }
 
 func (enc *Encoder) Interface(v interface{}) {
-	if v==nil {
+	if v == nil {
 		enc.grow(2)
 		r := enc.getPreviousRune()
 		if r != '{' && r != '[' {
@@ -37,7 +37,7 @@ func (enc *Encoder) Interface(v interface{}) {
 		enc.writeByte(',')
 	}
 
-	vm:=newObjectJsonMarshaller(v)
+	vm := newObjectJsonMarshaller(v)
 	enc.writeByte('{')
 	vm.MarshalJSONObject(enc)
 	enc.writeByte('}')
