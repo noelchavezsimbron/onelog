@@ -1,5 +1,7 @@
 module github.com/francoispqt/onelog
 
+go 1.14
+
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/francoispqt/gojay v0.0.0-20181220093123-f2cc13a668ca
