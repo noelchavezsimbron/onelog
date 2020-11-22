@@ -178,7 +178,7 @@ func (e ChainEntry) ObjectFunc(k string, v func(Entry)) ChainEntry {
 	return e
 }
 
-// JsonObject adds an object to the log entry by passing an implementation of gojay.MarshalerJSONObject.
+// JsonObject adds an object to the log entry by passing an implementation of JsonObject.
 func (e ChainEntry) Object(k string, obj interface{}) ChainEntry {
 	if e.disabled {
 		return e
@@ -187,7 +187,7 @@ func (e ChainEntry) Object(k string, obj interface{}) ChainEntry {
 	return e
 }
 
-// Array adds an object to the log entry by passing an implementation of gojay.MarshalerJSONObject.
+// Array adds an object to the log entry by passing an implementation of JsonArray.
 func (e ChainEntry) Array(k string, obj interface{}) ChainEntry {
 	if e.disabled {
 		return e
@@ -196,7 +196,16 @@ func (e ChainEntry) Array(k string, obj interface{}) ChainEntry {
 	return e
 }
 
-/*
+func (e ChainEntry) EmbeddedJson(k string, json []byte) ChainEntry {
+	if e.disabled {
+		return e
+	}
+
+	var embeddedJSON = EmbeddedJSON(json)
+	e.enc.AddEmbeddedJSONKey(k, &embeddedJSON)
+	return e
+}
+
 // Any adds anything stuff to the log entry based on it's type
 func (e ChainEntry) Any(k string, obj interface{}) ChainEntry {
 	if e.disabled {
@@ -205,4 +214,3 @@ func (e ChainEntry) Any(k string, obj interface{}) ChainEntry {
 	e.enc.AddInterfaceKey(k, obj)
 	return e
 }
-*/

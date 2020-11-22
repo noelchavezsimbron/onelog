@@ -47,11 +47,11 @@ func main() {
 		Body          interface{}       `json:"body"`
 	}{
 		TransactionID: "010010010010101010101",
-		Action:        "Received response from \"httpL//fakeapi.com",
-		Url:           "httpL//fakeapi.com",
+		Action:        "Received response from http://fakeapi.com",
+		Url:           "http://fakeapi.com",
 		Method:        "POST",
 		Headers: map[string]string{
-			"Content-Type": "appplication/json",
+			"Content-Type": "application/json",
 		},
 		Status:    "200",
 		SatusCode: 200,
@@ -68,6 +68,8 @@ func main() {
 		).
 		Object("mascota", perro).
 		Object("response", respTrance).
+		EmbeddedJson("mergedObj",[]byte(`{"name":"John", "age":31, "city":"New York"}`)).
+		EmbeddedJson("mergedArray",[]byte(`[{"name":"Juan", "age":20, "city":"New York"},{"name":"John", "age":31, "city":"New York"}]`)).
 		Write()
 
 }

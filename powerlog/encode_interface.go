@@ -2,10 +2,14 @@ package powerlog
 
 import "reflect"
 
+func (enc *Encoder) AddInterfaceKey(key string, v interface{}) {
+	enc.InterfaceKey(key, v)
+}
+
 func (enc *Encoder) InterfaceKey(key string, v interface{}) {
 
 	value := reflect.ValueOf(v)
-	if v==nil || value.Interface() == nil {
+	if v == nil || value.Interface() == nil {
 		return
 	}
 

@@ -183,6 +183,7 @@ type IEncoder interface {
 	AddEmbeddedJSONOmitEmpty(v *EmbeddedJSON)
 	AddEmbeddedJSONKey(key string, v *EmbeddedJSON)
 	AddEmbeddedJSONKeyOmitEmpty(key string, v *EmbeddedJSON)
+	AddInterfaceKey(key string, v interface{})
 	InterfaceKey(key string, v interface{})
 	AddInterface(v interface{})
 	Interface(v interface{})
