@@ -58,7 +58,7 @@ func main() {
 		Body:      *responseBody,
 	}
 
-	logger.InfoWith().
+	logger.ErrorWith("ERROR").
 		String("hellow", "wordld").
 		ObjectFunc(
 			"persona", func(entry powerlog.Entry) {
