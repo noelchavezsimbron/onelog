@@ -1,12 +1,12 @@
 package log
 
 import (
-	"github.com/francoispqt/onelog/_onelog"
+	"github.com/noelchavezsimbron/powerlog"
 	"os"
 	"time"
 )
 
-var logger = _onelog.New(os.Stdout, _onelog.ALL).Hook(func(e _onelog.Entry) {
+var logger = powerlog.New(os.Stdout, powerlog.ALL).Hook(func(e powerlog.Entry) {
 	e.Int64("time", time.Now().Unix())
 })
 
@@ -16,7 +16,7 @@ func Info(msg string) {
 }
 
 // InfoWithFields prints a message with log level INFO and fields.
-func InfoWithFields(msg string, fields func(e _onelog.Entry)) {
+func InfoWithFields(msg string, fields func(e powerlog.Entry)) {
 	logger.InfoWithFields(msg, fields)
 }
 
@@ -26,7 +26,7 @@ func Debug(msg string) {
 }
 
 // DebugWithFields prints a message with log level DEBUG and fields.
-func DebugWithFields(msg string, fields func(e _onelog.Entry)) {
+func DebugWithFields(msg string, fields func(e powerlog.Entry)) {
 	logger.DebugWithFields(msg, fields)
 }
 
@@ -36,7 +36,7 @@ func Warn(msg string) {
 }
 
 // WarnWithFields prints a message with log level WARN and fields.
-func WarnWithFields(msg string, fields func(e _onelog.Entry)) {
+func WarnWithFields(msg string, fields func(e powerlog.Entry)) {
 	logger.WarnWithFields(msg, fields)
 }
 
@@ -46,7 +46,7 @@ func Error(msg string) {
 }
 
 // ErrorWithFields prints a message with log level ERROR and fields.
-func ErrorWithFields(msg string, fields func(e _onelog.Entry)) {
+func ErrorWithFields(msg string, fields func(e powerlog.Entry)) {
 	logger.ErrorWithFields(msg, fields)
 }
 
@@ -56,6 +56,6 @@ func Fatal(msg string) {
 }
 
 // FatalWithFields prints a message with log level FATAL and fields.
-func FatalWithFields(msg string, fields func(e _onelog.Entry)) {
+func FatalWithFields(msg string, fields func(e powerlog.Entry)) {
 	logger.FatalWithFields(msg, fields)
 }
