@@ -13,7 +13,7 @@ func (enc *Encoder) InterfaceKey(key string, v interface{}) {
 		return
 	}
 
-	if fieldEncoder, ok := fieldEncoders[value.Kind()]; ok {
+	if fieldEncoder, ok := valueEncoders[value.Kind()]; ok {
 		fieldEncoder(key, value, enc)
 		return
 	}

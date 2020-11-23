@@ -1,19 +1,15 @@
-package onelog
-
-import (
-	"github.com/francoispqt/gojay"
-)
+package powerlog
 
 // Entry is the structure wrapping a pointer to the current encoder.
 // It provides easy API to work with GoJay's encoder.
 type Entry struct {
-	enc     *Encoder
+	enc     IEncoder
 	l       *Logger
 	Level   uint8
 	Message string
 }
 
-func (e Entry)  Enc() *Encoder {
+func (e Entry) Enc() IEncoder {
 	return e.enc
 }
 
@@ -57,20 +53,24 @@ func (e Entry) Err(k string, v error) Entry {
 
 // ObjectFunc adds an object to the log entry by calling a function.
 func (e Entry) ObjectFunc(k string, v func(Entry)) Entry {
-	e.enc.ObjectKey(k, Object(func(enc *Encoder) {
-		v(e)
-	}))
+	e.enc.ObjectKey(
+		k, ObjectBuilder(
+			func(enc IEncoder) {
+				v(e)
+			},
+		),
+	)
 	return e
 }
 
-// Object adds an object to the log entry by passing an implementation of gojay.MarshalerJSONObject.
-func (e Entry) Object(k string, obj gojay.MarshalerJSONObject) Entry {
+// Object adds an object to the log entry by passing an implementation of powerlog.JsonObject.
+func (e Entry) Object(k string, obj JsonObject) Entry {
 	e.enc.ObjectKey(k, obj)
 	return e
 }
 
 // Array adds an object to the log entry by passing an implementation of gojay.MarshalerJSONObject.
-func (e Entry) Array(k string, obj gojay.MarshalerJSONArray) Entry {
+func (e Entry) Array(k string, obj JsonArray) Entry {
 	e.enc.ArrayKey(k, obj)
 	return e
 }
@@ -96,6 +96,20 @@ func (e ChainEntry) Write() {
 	if e.exit {
 		e.Entry.l.exit(1)
 	}
+}
+
+// String adds a string to the log entry.
+func (e ChainEntry) Message(v string) ChainEntry {
+	if e.disabled {
+		return e
+	}
+	if e.Entry.l.contextName != "" {
+		e.Entry.Message = v
+	} else {
+		e.enc.StringKey("message", v)
+	}
+
+	return e
 }
 
 // String adds a string to the log entry.
@@ -159,27 +173,41 @@ func (e ChainEntry) ObjectFunc(k string, v func(Entry)) ChainEntry {
 	if e.disabled {
 		return e
 	}
-	e.enc.ObjectKey(k, Object(func(enc *Encoder) {
-		v(e.Entry)
-	}))
+	e.enc.ObjectKey(
+		k, ObjectBuilder(
+			func(enc IEncoder) {
+				v(e.Entry)
+			},
+		),
+	)
 	return e
 }
 
-// Object adds an object to the log entry by passing an implementation of gojay.MarshalerJSONObject.
-func (e ChainEntry) Object(k string, obj gojay.MarshalerJSONObject) ChainEntry {
+// JsonObject adds an object to the log entry by passing an implementation of JsonObject.
+func (e ChainEntry) Object(k string, obj interface{}) ChainEntry {
 	if e.disabled {
 		return e
 	}
-	e.enc.ObjectKey(k, obj)
+	e.enc.ObjectKey(k, newObjectJsonMarshaller(obj))
 	return e
 }
 
-// Array adds an object to the log entry by passing an implementation of gojay.MarshalerJSONObject.
-func (e ChainEntry) Array(k string, obj gojay.MarshalerJSONArray) ChainEntry {
+// Array adds an object to the log entry by passing an implementation of JsonArray.
+func (e ChainEntry) Array(k string, obj interface{}) ChainEntry {
 	if e.disabled {
 		return e
 	}
-	e.enc.ArrayKey(k, obj)
+	e.enc.ArrayKey(k, newArrayJsonMarshaller(obj))
+	return e
+}
+
+func (e ChainEntry) EmbeddedJson(k string, json []byte) ChainEntry {
+	if e.disabled {
+		return e
+	}
+
+	var embeddedJSON = EmbeddedJSON(json)
+	e.enc.AddEmbeddedJSONKey(k, &embeddedJSON)
 	return e
 }
 

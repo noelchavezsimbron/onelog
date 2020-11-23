@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"unsafe"
 )
 
 const jsonTag = "json"
@@ -35,9 +36,9 @@ func (marshaller objectJsonMarshaller) MarshalJSONObject(enc IEncoder) {
 
 		for i := 0; i < sType.NumField(); i++ {
 			field := sType.Field(i)
-			value := sValue.Field(i)
 			key := marshaller.getFieldName(field)
-			enc.InterfaceKey(key, value.Interface())
+			value := marshaller.getValueInterface(sValue, i)
+			enc.InterfaceKey(key, value)
 		}
 
 	}
@@ -63,4 +64,21 @@ func (marshaller objectJsonMarshaller) getFieldName(field reflect.StructField) s
 		return strings.Split(jsonTagValue, ",")[0]
 	}
 	return field.Name
+}
+
+func (marshaller objectJsonMarshaller) getValueInterface(objValue reflect.Value, fieldIndex int) (valueInterface interface{}) {
+	defer func() {
+		if err := recover(); err != nil {
+			objPointer := reflect.New(objValue.Type()).Elem()
+			objPointer.Set(objValue)
+
+			fieldValue := objPointer.Field(fieldIndex)
+			valueInterface = reflect.NewAt(fieldValue.Type(), unsafe.Pointer(fieldValue.UnsafeAddr())).Elem().Interface()
+		}
+	}()
+
+	fieldValue := objValue.Field(fieldIndex)
+	valueInterface = fieldValue.Interface()
+
+	return valueInterface
 }

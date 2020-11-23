@@ -1,4 +1,4 @@
-package onelog
+package powerlog
 
 const (
 	// INFO is the numeric code for INFO log level
@@ -19,6 +19,7 @@ var ALL = uint8(INFO | DEBUG | WARN | ERROR | FATAL)
 // Levels is the mapping between int log levels and their string value
 var Levels = make([]string, 256)
 var levelsJSON = make([][]byte, 256)
+var levelsJSONWithoutMessages = make([][]byte, 256)
 var levelKey = "level"
 
 func init() {
@@ -36,4 +37,14 @@ func genLevelSlices() {
 	levelsJSON[WARN] = []byte(`{"` + levelKey + `":"` + Levels[WARN] + `","` + msgKey + `":`)
 	levelsJSON[ERROR] = []byte(`{"` + levelKey + `":"` + Levels[ERROR] + `","` + msgKey + `":`)
 	levelsJSON[FATAL] = []byte(`{"` + levelKey + `":"` + Levels[FATAL] + `","` + msgKey + `":`)
+
+	levelsJSONWithoutMessages[INFO] = []byte(`{"` + levelKey + `":"` + Levels[INFO]  + `"`)
+	levelsJSONWithoutMessages[DEBUG] = []byte(`{"` + levelKey + `":"` + Levels[DEBUG] + `"`)
+	levelsJSONWithoutMessages[WARN] = []byte(`{"` + levelKey + `":"` + Levels[WARN]  + `"`)
+	levelsJSONWithoutMessages[ERROR] = []byte(`{"` + levelKey + `":"` + Levels[ERROR] + `"` )
+	levelsJSONWithoutMessages[FATAL] = []byte(`{"` + levelKey + `":"` + Levels[FATAL] + `"` )
+}
+
+func appendMessage(msg string) []byte {
+	return []byte(`,"` + msgKey + `":`)
 }

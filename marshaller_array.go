@@ -35,7 +35,7 @@ func (json arrayJsonMarshaller) IsNil() bool {
 	return json.slice == nil || len(json.slice) == 0
 }
 
-func (json *arrayJsonMarshaller) fill(obj interface{})   {
+func (json *arrayJsonMarshaller) fill(obj interface{}) {
 
 	if obj == nil {
 		return
@@ -52,6 +52,12 @@ func (json *arrayJsonMarshaller) fill(obj interface{})   {
 	if sType.Kind() == reflect.Slice {
 		if data, ok := obj.([]interface{}); ok {
 			json.slice = data
+			return
+		}
+
+		json.slice = make([]interface{}, sValue.Len())
+		for i := 0; i < sValue.Len(); i++ {
+			json.slice[i] = sValue.Index(i).Interface()
 		}
 	}
 

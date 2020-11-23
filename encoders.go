@@ -4,7 +4,7 @@ import (
 	"reflect"
 )
 
-var fieldEncoders map[reflect.Kind]fieldEncoder
+var valueEncoders map[reflect.Kind]fieldEncoder
 var elementEncoders map[reflect.Kind]elementEncoder
 
 type fieldEncoder func(keyName string, value reflect.Value, enc IEncoder)
@@ -14,26 +14,25 @@ var defaultEncoder fieldEncoder
 type elementEncoder func(enc IEncoder, value reflect.Value)
 
 func init() {
-	fieldEncoders = make(map[reflect.Kind]fieldEncoder)
-	fieldEncoders[reflect.String] = encoderString
-	fieldEncoders[reflect.Int] = encoderInt
-	fieldEncoders[reflect.Int8] = encoderInt
-	fieldEncoders[reflect.Int16] = encoderInt
-	fieldEncoders[reflect.Int32] = encoderInt
-	fieldEncoders[reflect.Int64] = encoderInt
-	fieldEncoders[reflect.Float32] = encoderFloat
-	fieldEncoders[reflect.Float64] = encoderFloat
-	fieldEncoders[reflect.Bool] = encoderBool
-	fieldEncoders[reflect.Struct] = encoderStruct
-	fieldEncoders[reflect.Map] = encoderMap
-	fieldEncoders[reflect.Slice] = encoderSlice
-	fieldEncoders[reflect.Interface] = encoderInterface
+	valueEncoders = make(map[reflect.Kind]fieldEncoder)
+	valueEncoders[reflect.String] = encoderString
+	valueEncoders[reflect.Int] = encoderInt
+	valueEncoders[reflect.Int8] = encoderInt
+	valueEncoders[reflect.Int16] = encoderInt
+	valueEncoders[reflect.Int32] = encoderInt
+	valueEncoders[reflect.Int64] = encoderInt
+	valueEncoders[reflect.Float32] = encoderFloat
+	valueEncoders[reflect.Float64] = encoderFloat
+	valueEncoders[reflect.Bool] = encoderBool
+	valueEncoders[reflect.Struct] = encoderStruct
+	valueEncoders[reflect.Map] = encoderMap
+	valueEncoders[reflect.Slice] = encoderSlice
+	valueEncoders[reflect.Interface] = encoderInterface
 
 	defaultEncoder = func(keyName string, value reflect.Value, enc IEncoder) {
 		enc.ObjectKey(keyName, newObjectJsonMarshaller(value.Interface()))
 	}
 
-	//----------------
 
 	elementEncoders = make(map[reflect.Kind]elementEncoder)
 	elementEncoders[reflect.String] = elementEncoderString
@@ -49,7 +48,6 @@ func init() {
 	elementEncoders[reflect.Map] = elementEncoderMap
 	elementEncoders[reflect.Slice] = elementEncoderSlice
 	elementEncoders[reflect.Interface] = elementEncoderInterface
-
 }
 
 var encoderString fieldEncoder = func(keyName string, value reflect.Value, enc IEncoder) {
@@ -84,7 +82,6 @@ var encoderInterface fieldEncoder = func(keyName string, value reflect.Value, en
 	enc.InterfaceKey(keyName, value.Interface())
 }
 
-// ----------------------------
 
 var elementEncoderString elementEncoder = func(enc IEncoder, value reflect.Value) {
 	enc.AddString(value.String())
