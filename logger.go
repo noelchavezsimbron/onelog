@@ -1,6 +1,7 @@
 package powerlog
 
 import (
+	"github.com/noelchavezsimbron/powerlog/encoder"
 	"io"
 	"io/ioutil"
 	"os"
@@ -127,7 +128,7 @@ func (l *Logger) Info(msg string) {
 	}
 	e := Entry{Level: INFO, Message: msg}
 
-	enc := BorrowEncoder(l.w)
+	enc := encoder.BorrowEncoder(l.w)
 	e.enc = enc
 
 	// if we do not require a context then we
@@ -160,7 +161,7 @@ func (l *Logger) InfoWith() ChainEntry {
 		return e
 	}
 
-	e.Entry.enc = BorrowEncoder(l.w)
+	e.Entry.enc = encoder.BorrowEncoder(l.w)
 
 	// if we do not require a context then we
 	// format with formatter and return.
@@ -183,7 +184,7 @@ func (l *Logger) InfoWithFields(msg string, fields func(Entry)) {
 	}
 	e := Entry{Level: INFO, Message: msg}
 
-	e.enc = BorrowEncoder(l.w)
+	e.enc = encoder.BorrowEncoder(l.w)
 
 	// if we do not require a context then we
 	// format with formatter and return.
@@ -210,7 +211,7 @@ func (l *Logger) Debug(msg string) {
 	}
 	e := Entry{Level: DEBUG, Message: msg}
 
-	e.enc = BorrowEncoder(l.w)
+	e.enc = encoder.BorrowEncoder(l.w)
 
 	// if we do not require a context then we
 	// format with formatter and return.
@@ -242,7 +243,7 @@ func (l *Logger) DebugWith() ChainEntry {
 		return e
 	}
 
-	e.Entry.enc = BorrowEncoder(l.w)
+	e.Entry.enc = encoder.BorrowEncoder(l.w)
 
 	// if we do not require a context then we
 	// format with formatter and return.
@@ -265,7 +266,7 @@ func (l *Logger) DebugWithFields(msg string, fields func(Entry)) {
 	}
 	e := Entry{Level: DEBUG, Message: msg}
 
-	e.enc = BorrowEncoder(l.w)
+	e.enc = encoder.BorrowEncoder(l.w)
 
 	// if we do not require a context then we
 	// format with formatter and return.
@@ -292,7 +293,7 @@ func (l *Logger) Warn(msg string) {
 	}
 	e := Entry{Level: WARN, Message: msg}
 
-	e.enc = BorrowEncoder(l.w)
+	e.enc = encoder.BorrowEncoder(l.w)
 
 	// if we do not require a context then we
 	// format with formatter and return.
@@ -324,7 +325,7 @@ func (l *Logger) WarnWith() ChainEntry {
 		return e
 	}
 
-	e.Entry.enc = BorrowEncoder(l.w)
+	e.Entry.enc = encoder.BorrowEncoder(l.w)
 
 	// if we do not require a context then we
 	// format with formatter and return.
@@ -348,7 +349,7 @@ func (l *Logger) WarnWithFields(msg string, fields func(Entry)) {
 		Message: msg,
 	}
 
-	e.enc = BorrowEncoder(l.w)
+	e.enc = encoder.BorrowEncoder(l.w)
 
 	// if we do not require a context then we
 	// format with formatter and return.
@@ -376,7 +377,7 @@ func (l *Logger) Error(msg string) {
 		Message: msg,
 	}
 
-	e.enc = BorrowEncoder(l.w)
+	e.enc = encoder.BorrowEncoder(l.w)
 
 	// if we do not require a context then we
 	// format with formatter and return.
@@ -409,7 +410,7 @@ func (l *Logger) ErrorWith(msg string) ChainEntry {
 		return e
 	}
 
-	e.Entry.enc = BorrowEncoder(l.w)
+	e.Entry.enc = encoder.BorrowEncoder(l.w)
 
 	// if we do not require a context then we
 	// format with formatter and return.
@@ -433,7 +434,7 @@ func (l *Logger) ErrorWithFields(msg string, fields func(Entry)) {
 		Message: msg,
 	}
 
-	e.enc = BorrowEncoder(l.w)
+	e.enc = encoder.BorrowEncoder(l.w)
 
 	// if we do not require a context then we
 	// format with formatter and return.
@@ -460,7 +461,7 @@ func (l *Logger) Fatal(msg string) {
 		Message: msg,
 	}
 
-	e.enc = BorrowEncoder(l.w)
+	e.enc = encoder.BorrowEncoder(l.w)
 
 	// if we do not require a context then we
 	// format with formatter and return.
@@ -495,7 +496,7 @@ func (l *Logger) FatalWith(msg string) ChainEntry {
 		return e
 	}
 
-	e.Entry.enc = BorrowEncoder(l.w)
+	e.Entry.enc = encoder.BorrowEncoder(l.w)
 
 	// if we do not require a context then we
 	// format with formatter and return.
@@ -521,7 +522,7 @@ func (l *Logger) FatalWithFields(msg string, fields func(Entry)) {
 		Message: msg,
 	}
 
-	e.enc = BorrowEncoder(l.w)
+	e.enc = encoder.BorrowEncoder(l.w)
 
 	// if we do not require a context then we
 	// format with formatter and return.
@@ -540,7 +541,7 @@ func (l *Logger) FatalWithFields(msg string, fields func(Entry)) {
 	l.exit(1)
 }
 
-func (l *Logger) openEntry(enc IEncoder) {
+func (l *Logger) openEntry(enc encoder.IEncoder) {
 	enc.AppendBytes(logOpen)
 }
 
@@ -575,7 +576,7 @@ func (l *Logger) finalizeIfContext(entry Entry) {
 	embeddedEnc := entry.enc
 
 	// create a new encoder for the final output.
-	entryEnc := BorrowEncoder(l.w)
+	entryEnc := encoder.BorrowEncoder(l.w)
 	defer entryEnc.Release()
 
 	entry.enc = entryEnc
@@ -585,7 +586,7 @@ func (l *Logger) finalizeIfContext(entry Entry) {
 	l.runHook(entry)
 
 	// Add entry's encoded data into new encoder.
-	var embeddedJSON = EmbeddedJSON(embeddedEnc.Buf())
+	var embeddedJSON = encoder.EmbeddedJSON(embeddedEnc.Buf())
 	entryEnc.AddEmbeddedJSONKey(l.contextName, &embeddedJSON)
 
 	// close new encoder context for proper json.

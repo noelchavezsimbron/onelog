@@ -1,4 +1,4 @@
-package powerlog
+package encoder
 
 // EncodeEmbeddedJSON encodes an embedded JSON.
 // is basically sets the internal buf as the value pointed by v and calls the io.Writer.Write()

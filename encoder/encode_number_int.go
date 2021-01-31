@@ -1,6 +1,8 @@
-package powerlog
+package encoder
 
-import "strconv"
+import (
+	"strconv"
+)
 
 // EncodeInt encodes an int to JSON
 func (enc *Encoder) EncodeInt(n int) error {

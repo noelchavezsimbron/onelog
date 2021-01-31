@@ -1,4 +1,4 @@
-package powerlog
+package encoder
 
 import (
 	"reflect"
@@ -30,7 +30,7 @@ func init() {
 	valueEncoders[reflect.Interface] = encoderInterface
 
 	defaultEncoder = func(keyName string, value reflect.Value, enc IEncoder) {
-		enc.ObjectKey(keyName, newObjectJsonMarshaller(value.Interface()))
+		enc.ObjectKey(keyName, NewObjectJsonMarshaller(value.Interface()))
 	}
 
 
@@ -67,15 +67,15 @@ var encoderBool fieldEncoder = func(keyName string, value reflect.Value, enc IEn
 }
 
 var encoderStruct fieldEncoder = func(keyName string, value reflect.Value, enc IEncoder) {
-	enc.ObjectKey(keyName, newObjectJsonMarshaller(value.Interface()))
+	enc.ObjectKey(keyName, NewObjectJsonMarshaller(value.Interface()))
 }
 
 var encoderMap fieldEncoder = func(keyName string, value reflect.Value, enc IEncoder) {
-	enc.ObjectKey(keyName, newObjectJsonMarshaller(value.Interface()))
+	enc.ObjectKey(keyName, NewObjectJsonMarshaller(value.Interface()))
 }
 
 var encoderSlice fieldEncoder = func(keyName string, value reflect.Value, enc IEncoder) {
-	enc.ArrayKey(keyName, newArrayJsonMarshaller(value.Interface()))
+	enc.ArrayKey(keyName, NewArrayJsonMarshaller(value.Interface()))
 }
 
 var encoderInterface fieldEncoder = func(keyName string, value reflect.Value, enc IEncoder) {
@@ -101,15 +101,15 @@ var elementEncoderBool elementEncoder = func(enc IEncoder, value reflect.Value) 
 
 var elementEncoderStruct elementEncoder = func(enc IEncoder, value reflect.Value) {
 
-	enc.AddObject(newObjectJsonMarshaller(value.Interface()))
+	enc.AddObject(NewObjectJsonMarshaller(value.Interface()))
 }
 
 var elementEncoderMap elementEncoder = func(enc IEncoder, value reflect.Value) {
-	enc.AddObject(newObjectJsonMarshaller(value.Interface()))
+	enc.AddObject(NewObjectJsonMarshaller(value.Interface()))
 }
 
 var elementEncoderSlice elementEncoder = func(enc IEncoder, value reflect.Value) {
-	enc.Array(newArrayJsonMarshaller(value.Interface()))
+	enc.Array(NewArrayJsonMarshaller(value.Interface()))
 }
 
 var elementEncoderInterface elementEncoder = func(enc IEncoder, value reflect.Value) {

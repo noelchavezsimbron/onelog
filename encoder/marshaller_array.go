@@ -1,12 +1,14 @@
-package powerlog
+package encoder
 
-import "reflect"
+import (
+	"reflect"
+)
 
 type arrayJsonMarshaller struct {
 	slice []interface{}
 }
 
-func newArrayJsonMarshaller(obj interface{}) *arrayJsonMarshaller {
+func NewArrayJsonMarshaller(obj interface{}) *arrayJsonMarshaller {
 	marshaller := &arrayJsonMarshaller{}
 	marshaller.fill(obj)
 	return marshaller

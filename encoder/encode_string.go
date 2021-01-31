@@ -1,5 +1,4 @@
-package powerlog
-
+package encoder
 
 func (enc *Encoder) EncodeString(s string) error {
 	if enc.isPooled == 1 {

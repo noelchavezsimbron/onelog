@@ -1,4 +1,4 @@
-package powerlog
+package encoder
 
 type InvalidUsagePooledEncoderError string
 

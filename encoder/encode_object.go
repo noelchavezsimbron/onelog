@@ -1,5 +1,4 @@
-package powerlog
-
+package encoder
 
 // EncodeObject encodes an object to JSON
 func (enc *Encoder) EncodeObject(v JsonObject) error {

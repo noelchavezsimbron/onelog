@@ -1,4 +1,4 @@
-package powerlog
+package encoder
 
 // EncodeArray encodes an implementation of MarshalerJSONArray to JSON
 func (enc *Encoder) EncodeArray(v JsonArray) error {

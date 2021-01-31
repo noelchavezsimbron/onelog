@@ -1,7 +1,8 @@
-package powerlog
+package encoder
 
-
-import "strconv"
+import (
+	"strconv"
+)
 
 // EncodeBool encodes a bool to JSON
 func (enc *Encoder) EncodeBool(v bool) error {

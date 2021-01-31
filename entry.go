@@ -1,15 +1,17 @@
 package powerlog
 
+import "github.com/noelchavezsimbron/powerlog/encoder"
+
 // Entry is the structure wrapping a pointer to the current encoder.
 // It provides easy API to work with GoJay's encoder.
 type Entry struct {
-	enc     IEncoder
+	enc     encoder.IEncoder
 	l       *Logger
 	Level   uint8
 	Message string
 }
 
-func (e Entry) Enc() IEncoder {
+func (e Entry) Enc() encoder.IEncoder {
 	return e.enc
 }
 
@@ -54,8 +56,8 @@ func (e Entry) Err(k string, v error) Entry {
 // ObjectFunc adds an object to the log entry by calling a function.
 func (e Entry) ObjectFunc(k string, v func(Entry)) Entry {
 	e.enc.ObjectKey(
-		k, ObjectBuilder(
-			func(enc IEncoder) {
+		k, encoder.ObjectBuilder(
+			func(enc encoder.IEncoder) {
 				v(e)
 			},
 		),
@@ -64,13 +66,13 @@ func (e Entry) ObjectFunc(k string, v func(Entry)) Entry {
 }
 
 // Object adds an object to the log entry by passing an implementation of powerlog.JsonObject.
-func (e Entry) Object(k string, obj JsonObject) Entry {
+func (e Entry) Object(k string, obj encoder.JsonObject) Entry {
 	e.enc.ObjectKey(k, obj)
 	return e
 }
 
 // Array adds an object to the log entry by passing an implementation of gojay.MarshalerJSONObject.
-func (e Entry) Array(k string, obj JsonArray) Entry {
+func (e Entry) Array(k string, obj encoder.JsonArray) Entry {
 	e.enc.ArrayKey(k, obj)
 	return e
 }
@@ -174,8 +176,8 @@ func (e ChainEntry) ObjectFunc(k string, v func(Entry)) ChainEntry {
 		return e
 	}
 	e.enc.ObjectKey(
-		k, ObjectBuilder(
-			func(enc IEncoder) {
+		k, encoder.ObjectBuilder(
+			func(enc encoder.IEncoder) {
 				v(e.Entry)
 			},
 		),
@@ -188,7 +190,7 @@ func (e ChainEntry) Object(k string, obj interface{}) ChainEntry {
 	if e.disabled {
 		return e
 	}
-	e.enc.ObjectKey(k, newObjectJsonMarshaller(obj))
+	e.enc.ObjectKey(k, encoder.NewObjectJsonMarshaller(obj))
 	return e
 }
 
@@ -197,7 +199,7 @@ func (e ChainEntry) Array(k string, obj interface{}) ChainEntry {
 	if e.disabled {
 		return e
 	}
-	e.enc.ArrayKey(k, newArrayJsonMarshaller(obj))
+	e.enc.ArrayKey(k, encoder.NewArrayJsonMarshaller(obj))
 	return e
 }
 
@@ -206,7 +208,7 @@ func (e ChainEntry) EmbeddedJson(k string, json []byte) ChainEntry {
 		return e
 	}
 
-	var embeddedJSON = EmbeddedJSON(json)
+	var embeddedJSON = encoder.EmbeddedJSON(json)
 	e.enc.AddEmbeddedJSONKey(k, &embeddedJSON)
 	return e
 }

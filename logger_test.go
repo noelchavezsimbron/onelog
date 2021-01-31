@@ -2,6 +2,7 @@ package powerlog
 
 import (
 	"errors"
+	"github.com/noelchavezsimbron/powerlog/encoder"
 	"github.com/stretchr/testify/assert"
 	"os"
 	"os/exec"
@@ -84,7 +85,7 @@ func TestOnelogFeature(t *testing.T) {
 			logger := New(nil, DEBUG|INFO|WARN|ERROR|FATAL)
 			str := logger.Caller(1)
 			strs := strings.Split(str, "/")
-			assert.Equal(t, "logger_test.go:85", strs[len(strs)-1], "file should be logger_test.go:81")
+			assert.Equal(t, "logger_test.go:86", strs[len(strs)-1], "file should be logger_test.go:81")
 		},
 	)
 }
@@ -353,8 +354,8 @@ func TestOnelogWithFields(t *testing.T) {
 							e.String("name", "somename")
 						},
 					)
-					e.Object("testObj", newObjectJsonMarshaller(testObj))
-					e.Array("testArr", newArrayJsonMarshaller(testArr))
+					e.Object("testObj", encoder.NewObjectJsonMarshaller(testObj))
+					e.Array("testArr", encoder.NewArrayJsonMarshaller(testArr))
 				},
 			)
 			json := `{"level":"info","message":"message","userID":"123456",` +
@@ -942,8 +943,8 @@ func TestOnelogHooksWithAndContext(t *testing.T) {
 							e.String("name", "somename")
 						},
 					)
-					e.Object("testObj", newObjectJsonMarshaller(testObj))
-					e.Array("testArr", newArrayJsonMarshaller(testArr))
+					e.Object("testObj", encoder.NewObjectJsonMarshaller(testObj))
+					e.Array("testArr", encoder.NewArrayJsonMarshaller(testArr))
 				},
 			)
 			json := `{"level":"info","message":"message","thunder_frequency":1000,"params":{"userID":"123456",` +
@@ -1052,8 +1053,8 @@ func TestOnelogWithAndContext(t *testing.T) {
 							e.String("name", "somename")
 						},
 					)
-					e.Object("testObj", newObjectJsonMarshaller(testObj))
-					e.Array("testArr", newArrayJsonMarshaller(testArr))
+					e.Object("testObj", encoder.NewObjectJsonMarshaller(testObj))
+					e.Array("testArr", encoder.NewArrayJsonMarshaller(testArr))
 				},
 			)
 			json := `{"level":"info","message":"message","params":{"userID":"123456",` +
@@ -1161,8 +1162,8 @@ func TestOnelogWithFieldsAndContext(t *testing.T) {
 							e.String("name", "somename")
 						},
 					)
-					e.Object("testObj", newObjectJsonMarshaller(testObj))
-					e.Array("testArr", newArrayJsonMarshaller(testArr))
+					e.Object("testObj", encoder.NewObjectJsonMarshaller(testObj))
+					e.Array("testArr", encoder.NewArrayJsonMarshaller(testArr))
 				},
 			)
 			json := `{"level":"info","message":"message","params":{"userID":"123456",` +
@@ -1351,8 +1352,8 @@ func TestOnelogNoContextFromContextLogger(t *testing.T) {
 							e.String("name", "somename")
 						},
 					)
-					e.Object("testObj", newObjectJsonMarshaller(testObj))
-					e.Array("testArr", newArrayJsonMarshaller(testArr))
+					e.Object("testObj", encoder.NewObjectJsonMarshaller(testObj))
+					e.Array("testArr", encoder.NewArrayJsonMarshaller(testArr))
 				},
 			)
 			json := `{"level":"info","message":"message","userID":"123456",` +

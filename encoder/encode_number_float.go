@@ -1,6 +1,8 @@
-package powerlog
+package encoder
 
-import "strconv"
+import (
+	"strconv"
+)
 
 // EncodeFloat encodes a float64 to JSON
 func (enc *Encoder) EncodeFloat(n float64) error {

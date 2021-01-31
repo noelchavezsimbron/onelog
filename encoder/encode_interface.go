@@ -1,6 +1,8 @@
-package powerlog
+package encoder
 
-import "reflect"
+import (
+	"reflect"
+)
 
 func (enc *Encoder) AddInterfaceKey(key string, v interface{}) {
 	enc.InterfaceKey(key, v)
@@ -41,7 +43,7 @@ func (enc *Encoder) Interface(v interface{}) {
 		enc.writeByte(',')
 	}
 
-	vm := newObjectJsonMarshaller(v)
+	vm := NewObjectJsonMarshaller(v)
 	enc.writeByte('{')
 	vm.MarshalJSONObject(enc)
 	enc.writeByte('}')

@@ -1,4 +1,4 @@
-package powerlog
+package encoder
 
 import (
 	"fmt"
@@ -13,7 +13,7 @@ type objectJsonMarshaller struct {
 	obj interface{}
 }
 
-func newObjectJsonMarshaller(obj interface{}) *objectJsonMarshaller {
+func NewObjectJsonMarshaller(obj interface{}) *objectJsonMarshaller {
 	return &objectJsonMarshaller{obj: obj}
 }
 
@@ -53,7 +53,7 @@ func (marshaller objectJsonMarshaller) MarshalJSONObject(enc IEncoder) {
 	}
 
 	if sType.Kind() == reflect.Interface {
-		newObjectJsonMarshaller(sValue.Interface()).MarshalJSONObject(enc)
+		NewObjectJsonMarshaller(sValue.Interface()).MarshalJSONObject(enc)
 	}
 
 }
